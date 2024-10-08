@@ -51,7 +51,7 @@ class IndexController extends AbstractController {
    * Route not found
    * @return \Symfony\Component\HttpFoundation\JsonResponse
    */
-  #[Route('/{path}', name: 'error', requirements: ['path' => '.*'])]
+  #[Route('/{path}', name: 'fallback', requirements: ['path' => '.*'], priority: -1000)]
   public function error(): JsonResponse {
     return $this->json(['message' => 'Api route not found!'], Response::HTTP_NOT_FOUND);
   }
