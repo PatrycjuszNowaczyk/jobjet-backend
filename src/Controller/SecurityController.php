@@ -86,4 +86,69 @@ class SecurityController extends AbstractController
         ], 201);
     }
 
+    /**
+     * Login users
+     *
+     * @param \Symfony\Component\HttpFoundation\Request $request
+     * @param \Doctrine\ORM\EntityManagerInterface $entityManager
+     * @param \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $userPasswordHasher
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    #[Route('/login', name: 'login_user', methods: ['POST'])]
+    public function login(
+      Request $request,
+      EntityManagerInterface $entityManager,
+      UserPasswordHasherInterface $userPasswordHasher
+    ): JsonResponse {
+        $requestHeaderAccept = $request->headers->get('Accept');
+        $requestHeaderContentType = $request->headers->get('Content-Type');
+
+        if ($requestHeaderAccept !== 'application/json') {
+            throw new BadRequestHttpException(
+              'Wrong HTTP header \'Accept\'!'
+            );
+        }
+        if ($requestHeaderContentType !== 'application/x-www-form-urlencoded') {
+            throw new BadRequestHttpException(
+              'Wrong HTTP header \'Content-Type\'!'
+            );
+        }
+
+        $data = $request->request->all();
+
+        $userEmail = $data['email'] ?? null;
+        $userPassword = $data['password'] ?? null;
+
+        if (!$userEmail) {
+            throw new BadRequestHttpException(
+              'Email is missing!'
+            );
+        }
+        if (!$userPassword) {
+            throw new BadRequestHttpException(
+              'Password is missing!'
+            );
+        }
+
+        $user = $entityManager
+          ->getRepository(Users::class)
+          ->findOneBy(['email' => $userEmail]);
+        if (!$user) {
+            throw new BadRequestHttpException(
+              'User not found!'
+            );
+        }
+
+        if (!$userPasswordHasher->isPasswordValid($user, $userPassword)) {
+            throw new BadRequestHttpException(
+              'Wrong password!'
+            );
+        }
+
+        return $this->json([
+          'message' => 'User logged in!',
+        ], 200);
+    }
+
 }
