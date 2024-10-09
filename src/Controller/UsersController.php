@@ -16,6 +16,8 @@ class UsersController extends AbstractController
 {
 
     /**
+     * Register new user
+     *
      * @param \Symfony\Component\HttpFoundation\Request $request
      * @param \Doctrine\ORM\EntityManagerInterface $entityManager
      * @param \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $userPasswordHasher
