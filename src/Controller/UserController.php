@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/users')]
-class UsersController extends AbstractController
+class UserController extends AbstractController
 {
 
     /**
