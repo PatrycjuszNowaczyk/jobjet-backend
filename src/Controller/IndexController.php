@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class IndexController extends AbstractController {
 
@@ -43,7 +44,19 @@ class IndexController extends AbstractController {
    */
   #[Route('/info', name: 'info', methods: ['GET'])]
   public function info(): Response {
+    $user = $this->getUser();
+    $username = $user instanceof UserInterface ? $user->getEmail() : 'Guest';
+
+    $message = "You are not logged in!";
+
+    if ($this->getUser() instanceof UserInterface) {
+      $message = "You are logged in as $username";
+    }
+
+    echo $message;
+
     phpinfo();
+
     return new Response();
   }
 
