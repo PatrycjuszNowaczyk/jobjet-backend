@@ -18,6 +18,10 @@ security:
             provider: app_user_provider
             custom_authenticators:
                 - App\Security\LoginAuthenticator
+            logout:
+                path: '/logout'
+#                target: 'index'
+                invalidate_session: true
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
