@@ -148,7 +148,8 @@ class SecurityController extends AbstractController
 
         return $this->json([
           'message' => 'User logged in!',
-        ], 200);
+        ]);
+    }
     }
 
 }
