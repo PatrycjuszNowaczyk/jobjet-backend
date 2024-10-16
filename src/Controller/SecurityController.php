@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 
 class SecurityController extends AbstractController
 {
@@ -150,6 +151,30 @@ class SecurityController extends AbstractController
           'message' => 'User logged in!',
         ]);
     }
+
+    #[Route('/logout', name: 'logout_user', methods: ['POST'])]
+    public function logout(): JsonResponse {
+        $user = $this->getUser();
+
+        if (!$user) {
+            throw new AuthenticationCredentialsNotFoundException(
+              'User is not logged in!'
+            );
+        }
+
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000,
+              $params["path"], $params["domain"],
+              $params["secure"], $params["httponly"]
+            );
+        }
+
+        session_destroy();
+
+        return $this->json([
+          'message' => 'User logged out!',
+        ]);
     }
 
 }
