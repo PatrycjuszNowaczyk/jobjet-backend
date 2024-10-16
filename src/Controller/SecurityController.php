@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Users;
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,7 +45,7 @@ class SecurityController extends AbstractController
 
         $data = $request->request->all();
 
-        $user = new Users();
+        $user = new User();
 
         $userEmail = $data['email'] ?? null;
         $userPassword = $data['password'] ?? null;
@@ -62,7 +62,7 @@ class SecurityController extends AbstractController
         }
 
         $isUserEmailTaken = $entityManager
-            ->getRepository(Users::class)
+            ->getRepository(User::class)
             ->findOneBy(['email' => $userEmail]) !== null;
         if ($isUserEmailTaken) {
             throw new BadRequestHttpException(
@@ -132,7 +132,7 @@ class SecurityController extends AbstractController
         }
 
         $user = $entityManager
-          ->getRepository(Users::class)
+          ->getRepository(User::class)
           ->findOneBy(['email' => $userEmail]);
         if (!$user) {
             throw new BadRequestHttpException(
